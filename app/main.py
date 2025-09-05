@@ -1,10 +1,12 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.encoders import jsonable_encoder
+from datetime import datetime
 from app.database import supabase, test_connection
 from app.models import Task, TaskCreate, Priority
 
 app = FastAPI(title="Task Manager API")
 
-# Evento de startup para probar la conexión
+
 @app.on_event("startup")
 async def startup_event():
     test_connection()
@@ -13,7 +15,7 @@ async def startup_event():
 async def root():
     return {"message": "Task Manager API"}
 
-# Obtener todas las tareas
+
 @app.get("/tasks", response_model=list[Task])
 async def get_tasks():
     response = supabase.table('tasks').select("*").execute()
@@ -23,7 +25,7 @@ async def get_tasks():
     tasks = []
     for task_data in response.data:
         task = Task(
-            id=str(task_data['id']),  # Convertir a string
+            id=str(task_data['id']),
             title=task_data['title'],
             description=task_data['description'],
             priority=Priority(task_data['priority']),
@@ -36,15 +38,15 @@ async def get_tasks():
         tasks.append(task)
     return tasks
 
-# Obtener una tarea por ID (cambiado a string)
+
 @app.get("/tasks/{task_id}", response_model=Task)
-async def get_task(task_id: str):  # Cambiado a string
+async def get_task(task_id: str):
     response = supabase.table('tasks').select("*").eq('id', task_id).execute()
     if not response.data:
         raise HTTPException(status_code=404, detail="Task not found")
     task_data = response.data[0]
     return Task(
-        id=str(task_data['id']),  # Convertir a string
+        id=str(task_data['id']),
         title=task_data['title'],
         description=task_data['description'],
         priority=Priority(task_data['priority']),
@@ -55,18 +57,20 @@ async def get_task(task_id: str):  # Cambiado a string
         updated_at=task_data.get('updated_at')
     )
 
-# Crear una nueva tarea
+
 @app.post("/tasks", response_model=Task)
 async def create_task(task: TaskCreate):
-    # Convertir el modelo a un diccionario y el priority a su valor entero
-    task_data = task.dict()
-    task_data['priority'] = task_data['priority'].value
+    
+    task_data = jsonable_encoder(task)
+    
+    
     response = supabase.table('tasks').insert(task_data).execute()
     if not response.data:
         raise HTTPException(status_code=400, detail="Error creating task")
+    
     created_task = response.data[0]
     return Task(
-        id=str(created_task['id']),  # Convertir a string
+        id=str(created_task['id']),
         title=created_task['title'],
         description=created_task['description'],
         priority=Priority(created_task['priority']),
@@ -77,19 +81,20 @@ async def create_task(task: TaskCreate):
         updated_at=created_task.get('updated_at')
     )
 
-# Actualizar una tarea (cambiado a string)
+
 @app.put("/tasks/{task_id}", response_model=Task)
-async def update_task(task_id: str, task: TaskCreate):  # Cambiado a string
-    # Convertir el modelo a un diccionario y el priority a su valor entero
-    task_data = task.dict()
-    task_data['priority'] = task_data['priority'].value
-    # Actualizar la tarea
+async def update_task(task_id: str, task: TaskCreate):
+    
+    task_data = jsonable_encoder(task)
+    
+    
     response = supabase.table('tasks').update(task_data).eq('id', task_id).execute()
     if not response.data:
         raise HTTPException(status_code=404, detail="Task not found")
+    
     updated_task = response.data[0]
     return Task(
-        id=str(updated_task['id']),  # Convertir a string
+        id=str(updated_task['id']),
         title=updated_task['title'],
         description=updated_task['description'],
         priority=Priority(updated_task['priority']),
@@ -100,9 +105,9 @@ async def update_task(task_id: str, task: TaskCreate):  # Cambiado a string
         updated_at=updated_task.get('updated_at')
     )
 
-# Eliminar una tarea (cambiado a string)
+
 @app.delete("/tasks/{task_id}")
-async def delete_task(task_id: str):  # Cambiado a string
+async def delete_task(task_id: str):
     response = supabase.table('tasks').delete().eq('id', task_id).execute()
     if not response.data:
         raise HTTPException(status_code=404, detail="Task not found")
