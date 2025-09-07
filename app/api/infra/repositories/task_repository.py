@@ -2,7 +2,7 @@
 from typing import List, Optional
 
 from app.api.domain.models import Priority, Task, TaskCreate
-from app.api.infra.database import db  # Import db from your database module
+from app.api.infra.database import db  
 
 class TaskRepository:
     def __init__(self):

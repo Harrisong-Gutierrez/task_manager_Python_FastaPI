@@ -9,9 +9,9 @@ class Database:
         self.url: str = Settings.SUPABASE_URL
         self.key: str = Settings.SUPABASE_KEY
         self.client: Client = create_client(self.url, self.key)
-    
+
     def get_client(self) -> Client:
         return self.client
 
-# Instancia global
+
 db = Database()

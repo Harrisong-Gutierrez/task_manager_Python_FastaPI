@@ -1,4 +1,3 @@
-# Añadir 'app.'
 from typing import List, Optional
 
 from app.api.domain.models import Task, TaskCreate
@@ -15,7 +14,7 @@ class TaskService:
         return self.task_repository.get_by_id(task_id)
     
     def create_task(self, task: TaskCreate) -> Task:
-        # Aquí puedes añadir lógica de negocio adicional
+        
         return self.task_repository.create(task)
     
     def update_task(self, task_id: str, task: TaskCreate) -> Optional[Task]:
