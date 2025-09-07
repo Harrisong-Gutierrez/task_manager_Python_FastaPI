@@ -9,7 +9,7 @@ key: str = os.environ.get("SUPABASE_KEY")
 
 supabase: Client = create_client(url, key)
 
-# Función para probar la conexión
+
 def test_connection():
     try:
         response = supabase.table('tasks').select("*").limit(1).execute()

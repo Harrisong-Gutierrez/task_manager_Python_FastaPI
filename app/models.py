@@ -18,7 +18,7 @@ class TaskBase(BaseModel):
     description: Optional[str] = None
     priority: Priority = Priority.LOW
     completed: bool = False
-    due_date: Optional[str] = None  # Changed from datetime to string
+    due_date: Optional[str] = None  
     task_type: str = "normal"
 
 class TaskCreate(TaskBase):
@@ -28,7 +28,7 @@ class Task(TaskBase):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     created_at: datetime
     updated_at: Optional[datetime] = None
-    due_date: Optional[datetime] = None  # Keep as datetime for internal use
+    due_date: Optional[datetime] = None  
 
     class Config:
         from_attributes = True
