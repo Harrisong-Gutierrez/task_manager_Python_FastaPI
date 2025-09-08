@@ -1,23 +1,24 @@
 from fastapi import FastAPI
-from app.api.endpoints import tasks, auth, health ,users  
-from app.api.infra.database import db
+from app.api.endpoints import tasks, auth, health, users
+from app.infra.database import db
 
 app = FastAPI(title="Task Manager API")
 
-# Include routers
 app.include_router(auth.router)
 app.include_router(tasks.router)
 app.include_router(health.router)
 app.include_router(users.router)
 
+
 @app.on_event("startup")
 async def startup_event():
-    # Test connection
+
     try:
-        response = db.get_client().table('tasks').select("*").limit(1).execute()
+        response = db.get_client().table("tasks").select("*").limit(1).execute()
         print("Conexión exitosa a Supabase")
     except Exception as e:
         print(f"Error de conexión: {e}")
+
 
 @app.get("/")
 async def root():

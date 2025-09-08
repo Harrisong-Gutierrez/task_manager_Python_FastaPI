@@ -4,6 +4,7 @@ from datetime import datetime
 from enum import IntEnum
 import uuid
 
+
 class Priority(IntEnum):
     LOW = 1
     MEDIUM = 2
@@ -13,13 +14,15 @@ class Priority(IntEnum):
     def name(self):
         return {1: "Baja", 2: "Media", 3: "Alta"}[self.value]
 
-# Modelos para autenticación
+
 class UserBase(BaseModel):
     email: EmailStr
     full_name: str
 
+
 class UserCreate(UserBase):
     password: str
+
 
 class User(UserBase):
     id: str
@@ -30,14 +33,16 @@ class User(UserBase):
     class Config:
         from_attributes = True
 
+
 class Token(BaseModel):
     access_token: str
     token_type: str
 
+
 class TokenData(BaseModel):
     email: Optional[str] = None
 
-# Modelos para tareas
+
 class TaskBase(BaseModel):
     title: str
     description: Optional[str] = None
@@ -46,8 +51,10 @@ class TaskBase(BaseModel):
     due_date: Optional[str] = None
     task_type: str = "normal"
 
+
 class TaskCreate(TaskBase):
     pass
+
 
 class Task(TaskBase):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))

@@ -1,7 +1,7 @@
 import os
 from supabase import create_client, Client
 
-from app.api.core.config import Settings
+from app.core.config import Settings
 
 
 class Database:
