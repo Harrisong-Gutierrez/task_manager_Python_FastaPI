@@ -1,24 +1,26 @@
-from typing import List, Optional
-
-from app.api.domain.models import Task, TaskCreate
 from app.api.infra.repositories.task_repository import TaskRepository
+from app.api.domain.models import Task, TaskCreate
+from typing import List, Optional
 
 class TaskService:
     def __init__(self, task_repository: TaskRepository):
         self.task_repository = task_repository
     
-    def get_all_tasks(self) -> List[Task]:
-        return self.task_repository.get_all()
+    def get_all_tasks(self, user_id: str) -> List[Task]:
+        return self.task_repository.get_all(user_id)
     
-    def get_task_by_id(self, task_id: str) -> Optional[Task]:
-        return self.task_repository.get_by_id(task_id)
+    def get_task_by_id(self, task_id: str, user_id: str) -> Optional[Task]:
+        return self.task_repository.get_by_id(task_id, user_id)
     
-    def create_task(self, task: TaskCreate) -> Task:
-        
-        return self.task_repository.create(task)
+    def create_task(self, task: TaskCreate, user_id: str) -> Task:
+        # Añadir user_id al task
+        task_data = task.dict()
+        task_data["user_id"] = user_id
+        return self.task_repository.create(task_data)
     
-    def update_task(self, task_id: str, task: TaskCreate) -> Optional[Task]:
-        return self.task_repository.update(task_id, task)
+    def update_task(self, task_id: str, task: TaskCreate, user_id: str) -> Optional[Task]:
+        task_data = task.dict()
+        return self.task_repository.update(task_id, task_data, user_id)
     
-    def delete_task(self, task_id: str) -> bool:
-        return self.task_repository.delete(task_id)
+    def delete_task(self, task_id: str, user_id: str) -> bool:
+        return self.task_repository.delete(task_id, user_id)

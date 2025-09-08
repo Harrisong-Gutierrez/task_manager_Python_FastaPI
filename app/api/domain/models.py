@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from typing import Optional
 from datetime import datetime
 from enum import IntEnum
@@ -13,6 +13,31 @@ class Priority(IntEnum):
     def name(self):
         return {1: "Baja", 2: "Media", 3: "Alta"}[self.value]
 
+# Modelos para autenticación
+class UserBase(BaseModel):
+    email: EmailStr
+    full_name: str
+
+class UserCreate(UserBase):
+    password: str
+
+class User(UserBase):
+    id: str
+    is_active: bool = True
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None
+
+# Modelos para tareas
 class TaskBase(BaseModel):
     title: str
     description: Optional[str] = None
@@ -26,6 +51,7 @@ class TaskCreate(TaskBase):
 
 class Task(TaskBase):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str
     created_at: datetime
     updated_at: Optional[datetime] = None
 

@@ -1,42 +1,39 @@
-
+from app.api.infra.database import db
+from app.api.domain.models import Task, TaskCreate, Priority
 from typing import List, Optional
-
-from app.api.domain.models import Priority, Task, TaskCreate
-from app.api.infra.database import db  
 
 class TaskRepository:
     def __init__(self):
         self.table = db.get_client().table('tasks')
     
-    def get_all(self) -> List[Task]:
-        response = self.table.select("*").execute()
+    def get_all(self, user_id: str) -> List[Task]:
+        response = self.table.select("*").eq('user_id', user_id).execute()
         return [self._map_to_task(task_data) for task_data in response.data]
     
-    def get_by_id(self, task_id: str) -> Optional[Task]:
-        response = self.table.select("*").eq('id', task_id).execute()
+    def get_by_id(self, task_id: str, user_id: str) -> Optional[Task]:
+        response = self.table.select("*").eq('id', task_id).eq('user_id', user_id).execute()
         if response.data:
             return self._map_to_task(response.data[0])
         return None
     
-    def create(self, task: TaskCreate) -> Task:
-        task_data = task.dict()
+    def create(self, task_data: dict) -> Task:
         response = self.table.insert(task_data).execute()
         return self._map_to_task(response.data[0])
     
-    def update(self, task_id: str, task: TaskCreate) -> Optional[Task]:
-        task_data = task.dict()
-        response = self.table.update(task_data).eq('id', task_id).execute()
+    def update(self, task_id: str, task_data: dict, user_id: str) -> Optional[Task]:
+        response = self.table.update(task_data).eq('id', task_id).eq('user_id', user_id).execute()
         if response.data:
             return self._map_to_task(response.data[0])
         return None
     
-    def delete(self, task_id: str) -> bool:
-        response = self.table.delete().eq('id', task_id).execute()
+    def delete(self, task_id: str, user_id: str) -> bool:
+        response = self.table.delete().eq('id', task_id).eq('user_id', user_id).execute()
         return len(response.data) > 0
     
     def _map_to_task(self, task_data: dict) -> Task:
         return Task(
             id=str(task_data['id']),
+            user_id=str(task_data['user_id']),
             title=task_data['title'],
             description=task_data['description'],
             priority=Priority(task_data['priority']),
