@@ -1,5 +1,5 @@
 from app.infra.repositories.user_repository import UserRepository
-from app.domain.models import User
+from app.domain.models import User, UserCreate
 from typing import List, Optional
 
 
@@ -16,5 +16,5 @@ class UserService:
     def get_user_by_email(self, email: str) -> Optional[User]:
         return self.user_repository.get_by_email(email)
 
-    def create_user(self, user_data: dict) -> User:
+    def create_user(self, user_data: UserCreate) -> User:
         return self.user_repository.create(user_data)

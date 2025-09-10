@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from sqlalchemy import text
 from app.api.endpoints import tasks, auth, health, users
 from app.infra.database import db
 
@@ -14,10 +15,11 @@ app.include_router(users.router)
 async def startup_event():
 
     try:
-        response = db.get_client().table("tasks").select("*").limit(1).execute()
-        print("Conexión exitosa a Supabase")
+        with db.engine.connect() as connection:
+            result = connection.execute(text("SELECT 1"))
+            print("Conexión exitosa a la base de datos PostgreSQL")
     except Exception as e:
-        print(f"Error de conexión: {e}")
+        print(f"Error de conexión a la base de datos: {e}")
 
 
 @app.get("/")

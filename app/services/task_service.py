@@ -14,15 +14,28 @@ class TaskService:
         return self.task_repository.get_by_id(task_id, user_id)
 
     def create_task(self, task: TaskCreate, user_id: str) -> Task:
-
-        task_data = task.dict()
-        task_data["user_id"] = user_id
+        task_data = {
+            "title": task.title,
+            "description": task.description,
+            "priority": task.priority.value,
+            "completed": task.completed,
+            "due_date": task.due_date,
+            "task_type": task.task_type,
+            "user_id": user_id,
+        }
         return self.task_repository.create(task_data)
 
     def update_task(
         self, task_id: str, task: TaskCreate, user_id: str
     ) -> Optional[Task]:
-        task_data = task.dict()
+        task_data = {
+            "title": task.title,
+            "description": task.description,
+            "priority": task.priority.value,
+            "completed": task.completed,
+            "due_date": task.due_date,
+            "task_type": task.task_type,
+        }
         return self.task_repository.update(task_id, task_data, user_id)
 
     def delete_task(self, task_id: str, user_id: str) -> bool:

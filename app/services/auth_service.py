@@ -11,19 +11,17 @@ class AuthService:
         self.user_repository = user_repository
 
     def authenticate_user(self, email: str, password: str) -> Optional[User]:
+        # Obtenemos el usuario por email
         user = self.user_repository.get_by_email(email)
         if not user:
             return None
 
-        response = (
-            self.user_repository.table.select("hashed_password")
-            .eq("email", email)
-            .execute()
-        )
-        if not response.data:
+        # Obtenemos la contraseña hasheada directamente desde el repositorio
+        hashed_password = self.user_repository.get_password_hash(email)
+        if not hashed_password:
             return None
 
-        hashed_password = response.data[0]["hashed_password"]
+        # Verificamos la contraseña
         if not verify_password(password, hashed_password):
             return None
 
