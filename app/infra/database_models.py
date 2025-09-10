@@ -4,7 +4,8 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from datetime import datetime
 
-from app.infra.base import Base  
+from app.infra.base import Base
+
 
 class User(Base):
     __tablename__ = "users"
@@ -12,7 +13,7 @@ class User(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     email = Column(String, unique=True, index=True)
     full_name = Column(String)
-    password = Column(String)  
+    password = Column(String)
     is_active = Column(Boolean, default=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -26,7 +27,7 @@ class Task(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()))
     title = Column(String)
     description = Column(String, nullable=True)
-    priority = Column(Integer, default=1) 
+    priority = Column(Integer, default=1)
     completed = Column(Boolean, default=False)
     due_date = Column(String, nullable=True)
     task_type = Column(String, default="normal")

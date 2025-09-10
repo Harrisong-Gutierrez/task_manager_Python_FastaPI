@@ -16,10 +16,7 @@ def get_auth_service(db: Session = Depends(get_db)):
 
 
 @router.post("/register", response_model=User, status_code=status.HTTP_201_CREATED)
-async def register(
-    user: UserCreate, 
-    service: AuthService = Depends(get_auth_service)
-):
+async def register(user: UserCreate, service: AuthService = Depends(get_auth_service)):
     try:
         return service.create_user(user)
     except ValueError as e:
@@ -27,7 +24,7 @@ async def register(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error interno del servidor"
+            detail="Error interno del servidor",
         )
 
 
@@ -50,9 +47,5 @@ async def login_for_access_token(
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error interno del servidor"
+            detail="Error interno del servidor",
         )
-        
-        
-        
-        
