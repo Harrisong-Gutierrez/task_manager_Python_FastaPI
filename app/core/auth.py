@@ -8,14 +8,14 @@ from app.core.config import settings
 from typing import Optional
 import logging
 from fastapi import status
-from datetime import datetime, timezone  # Importar datetime para manejar timestamps
+from datetime import datetime, timezone
 
 HTTP_401_UNAUTHORIZED = status.HTTP_401_UNAUTHORIZED
 HTTP_403_FORBIDDEN = status.HTTP_403_FORBIDDEN
 HTTP_500_INTERNAL_SERVER_ERROR = status.HTTP_500_INTERNAL_SERVER_ERROR
 HTTP_400_BAD_REQUEST = status.HTTP_400_BAD_REQUEST
 
-# Configurar logging
+
 logger = logging.getLogger(__name__)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
