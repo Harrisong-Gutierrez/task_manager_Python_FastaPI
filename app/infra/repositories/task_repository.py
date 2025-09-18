@@ -19,10 +19,12 @@ class TaskRepository:
 
     def get_by_id(self, task_id: str, user_id: str) -> Optional[Task]:
         try:
-            task_db = self.db.query(TaskDB).filter(
-                and_(TaskDB.id == task_id, TaskDB.user_id == user_id)
-            ).first()
-            
+            task_db = (
+                self.db.query(TaskDB)
+                .filter(and_(TaskDB.id == task_id, TaskDB.user_id == user_id))
+                .first()
+            )
+
             if task_db:
                 return self._map_to_task(task_db)
             return None
@@ -43,14 +45,16 @@ class TaskRepository:
 
     def update(self, task_id: str, task_data: dict, user_id: str) -> Optional[Task]:
         try:
-            task_db = self.db.query(TaskDB).filter(
-                and_(TaskDB.id == task_id, TaskDB.user_id == user_id)
-            ).first()
-            
+            task_db = (
+                self.db.query(TaskDB)
+                .filter(and_(TaskDB.id == task_id, TaskDB.user_id == user_id))
+                .first()
+            )
+
             if task_db:
                 for key, value in task_data.items():
                     setattr(task_db, key, value)
-                
+
                 self.db.commit()
                 self.db.refresh(task_db)
                 return self._map_to_task(task_db)
@@ -61,10 +65,12 @@ class TaskRepository:
 
     def delete(self, task_id: str, user_id: str) -> bool:
         try:
-            task_db = self.db.query(TaskDB).filter(
-                and_(TaskDB.id == task_id, TaskDB.user_id == user_id)
-            ).first()
-            
+            task_db = (
+                self.db.query(TaskDB)
+                .filter(and_(TaskDB.id == task_id, TaskDB.user_id == user_id))
+                .first()
+            )
+
             if task_db:
                 self.db.delete(task_db)
                 self.db.commit()
